@@ -26,68 +26,18 @@ namespace PruebaTalycapGlobal.Controllers
         private readonly UserManager<IdentityUser> userManager;
         private readonly IConfiguration configuration;
         private readonly SignInManager<IdentityUser> signInManager;
-        //private readonly HashService hashService;
         private readonly IDataProtector dataProtector;
 
         public CuentasController(UserManager<IdentityUser> userManager,
             IConfiguration configuration,
             SignInManager<IdentityUser> signInManager,
-            IDataProtectionProvider dataProtectionProvider/*,
-            HashService hashService*/)
+            IDataProtectionProvider dataProtectionProvider)
         {
             this.userManager = userManager;
             this.configuration = configuration;
             this.signInManager = signInManager;
-            //this.hashService = hashService;
             dataProtector = dataProtectionProvider.CreateProtector("valor_unico_y_quizas_secreto");
-        }
-
-        [HttpGet("hash/{textoPlano}")]
-        public ActionResult RealizarHash(string textoPlano)
-        {
-            return Ok();
-            /*var resultado1 = hashService.Hash(textoPlano);
-            var resultado2 = hashService.Hash(textoPlano);
-            return Ok(new
-            {
-                textoPlano = textoPlano,
-                Hash1 = resultado1,
-                Hash2 = resultado2
-            });*/
-        }
-
-        [HttpGet("encriptar")]
-        public ActionResult Encriptar()
-        {
-            var textoPlano = "Felipe Gavilán";
-            var textoCifrado = dataProtector.Protect(textoPlano);
-            var textoDesencriptado = dataProtector.Unprotect(textoCifrado);
-
-            return Ok(new
-            {
-                textoPlano = textoPlano,
-                textoCifrado = textoCifrado,
-                textoDesencriptado = textoDesencriptado
-            });
-        }
-
-        [HttpGet("encriptarPorTiempo")]
-        public ActionResult EncriptarPorTiempo()
-        {
-            var protectorLimitadoPorTiempo = dataProtector.ToTimeLimitedDataProtector();
-
-            var textoPlano = "Felipe Gavilán";
-            var textoCifrado = protectorLimitadoPorTiempo.Protect(textoPlano, lifetime: TimeSpan.FromSeconds(5));
-            Thread.Sleep(6000);
-            var textoDesencriptado = protectorLimitadoPorTiempo.Unprotect(textoCifrado);
-
-            return Ok(new
-            {
-                textoPlano = textoPlano,
-                textoCifrado = textoCifrado,
-                textoDesencriptado = textoDesencriptado
-            });
-        }
+        }      
 
         [HttpPost("registrar")] // api/cuentas/registrar
         public async Task<ActionResult<RespuestaAutenticacion>> Registrar(CredencialesUsuario credencialesUsuario)
@@ -144,7 +94,7 @@ namespace PruebaTalycapGlobal.Controllers
             var claims = new List<Claim>()
             {
                 new Claim("email", credencialesUsuario.Email),
-                new Claim("lo que yo quiera", "cualquier otro valor")
+               // new Claim("lo que yo quiera", "cualquier otro valor")
             };
 
             var usuario = await userManager.FindByEmailAsync(credencialesUsuario.Email);
@@ -166,21 +116,6 @@ namespace PruebaTalycapGlobal.Controllers
                 Expiracion = expiracion
             };
         }
-        /*
-        [HttpPost("HacerAdmin")]
-        public async Task<ActionResult> HacerAdmin(EditarAdminDTO editarAdminDTO)
-        {
-            var usuario = await userManager.FindByEmailAsync(editarAdminDTO.Email);
-            await userManager.AddClaimAsync(usuario, new Claim("esAdmin", "1"));
-            return NoContent();
-        }
-
-        [HttpPost("RemoverAdmin")]
-        public async Task<ActionResult> RemoverAdmin(EditarAdminDTO editarAdminDTO)
-        {
-            var usuario = await userManager.FindByEmailAsync(editarAdminDTO.Email);
-            await userManager.RemoveClaimAsync(usuario, new Claim("esAdmin", "1"));
-            return NoContent();
-        }*/
+       
     }
 }

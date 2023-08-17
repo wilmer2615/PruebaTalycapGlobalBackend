@@ -1,5 +1,7 @@
 ﻿using DataTransferObjects;
 using Logic.EnvioLogic;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -8,6 +10,7 @@ namespace PruebaTalycapGlobal.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class EnvioController : ControllerBase
     {
         private readonly IEnvioLogic _envioLogic;
@@ -92,6 +95,7 @@ namespace PruebaTalycapGlobal.Controllers
         /// </summary>
         /// <returns>Lista de envios.</returns>
         [HttpGet()]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {

@@ -37,11 +37,7 @@ namespace PruebaTalycapGlobal
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
-            /*services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PruebaTalycapGlobal", Version = "v1" });
-            });*/
+            services.AddControllers();            
 
             //Configuracion Cors Origin
             services.AddCors(options =>
